@@ -1,5 +1,5 @@
 # u-seq-0.2
-New versioin of u-seq. Version 0.2: Finds the special strings we love &lt;3
+New versioin of u-seq. Version 0.2: Finds those special regions of a strings we love &lt;3
 
 # Instructions for u-seq-0.2 installing
 Download the project from Github.  
