@@ -74,10 +74,13 @@ def standard_deviation(hash_table):
     summ = 0
     for item in seqLen:
         summ += (item - m) ** 2
-
-    var = summ / (n - 1)
-    sd = var**(1.0/2.0)
-    sde = sd / n**(1.0/2.0)
+    try:
+        var = summ / (n - 1)
+        sd = var**(1.0/2.0)
+        sde = sd / n**(1.0/2.0)
+    except Exception:
+        sd = 0
+        sde = 0
     return (sd, sde)
 
 def N50_up_down(hash_table):

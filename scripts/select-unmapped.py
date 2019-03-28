@@ -75,6 +75,6 @@ def main():
     seqs, gids = load(seqs_file, gids_file)
     unmapped_seqs = select_unmapped(seqs, gids)
     if write_to_fasta(unmapped_seqs, rand_pid):
-        print "[SELECT-UNMAPPED][MESSAGE!] - Success!"
+        print "[SELECT-U][MESSAGE!] - " + str(len(unmapped_seqs)) + " unmapped sequences were stored. Success!"
 
 if __name__ == "__main__": main()

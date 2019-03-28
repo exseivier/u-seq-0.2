@@ -114,7 +114,7 @@ def write_to_file(cont, format, filename):
         try:
             FHOUT.write(str_out)
         except Exception:
-            print "[ERROR!] - In writing to file!"
+            print "[DNA-PROC][ERROR!] - In writing to file!"
             FHOUT.close()
             return False
     FHOUT.close()
