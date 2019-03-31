@@ -88,7 +88,14 @@ done
 THIS_PROCESS_PID=$RANDOM
 
 echo "[USEQ    ][MESSAGE!] - PROCESS PID: $THIS_PROCESS_PID"
+echo "[USEQ    ][INTERACT] - PRESS ANY KEY TO CONTINUE OR C TO CANCEL IT"
+read -r GET_WARNED
 
+if [ "$GET_WARNED" == "C" || "$GET_WARNED" == "c" ];
+then
+	echo "[USEQ    ][WARNING!] - Exiting the program"
+	exit 0
+fi
 
 # // BUILDING INDEXES FROM DATABASE GENOMES
 echo "[USEQ    ][MESSAGE!] - Calling build-db"
@@ -102,9 +109,15 @@ split-genome $PATH_QUERY_GENOME $SIZE $STEPS
 # NAMES OF THESE FILES ARE [] AND [] RESPECTIVELY AND THEY MUST BE IN THE
 # SAME FOLDER WERE THIS SCRIPT WAS LAUNCHED.
 
+## // GLOWING \\ BLINKING // GLOWING \\ BLINKING
+#######################################################
+FASTA_FILE_NAME=$(basename ${PATH_QUERY_GENOME} "/") ##	SOMETHING TO GET NOTED
+#######################################################
+
+
 # // MAPPING WITH BLASTN
 echo "[USEQ    ][MESSAGE!] - Calling blastn"
-blastn -query ${PATH_QUERY_GENOME%/*}/splited-genome.fas \
+blastn -query ${PATH_QUERY_GENOME%/*}/splited-genome.${FASTA_FILE_NAME:0:15}.${SIZE}.${STEPS}.fas \
 	-db ${PATH_GENOMES_DB%.*}.db \
 	-out ${PATH_QUERY_GENOME%.*}.blast \
 	-evalue $EVALUE \
@@ -124,24 +137,29 @@ echo "[USEQ    ][MESSAGE!] - Extracting gene ids from blast results"
 cut -f1 ${PATH_QUERY_GENOME%.*}.blast | sort | uniq > ${PATH_QUERY_GENOME%/*}/gids.txt
 
 # // SELECTING UNMAPPED SEQUENCES
-echo "[USEQ    ][MESSAGE!] - Selecting unmapped sequences from splited-genome.fas"
-select-unmapped ${PATH_QUERY_GENOME%/*}/splited-genome.fas \
+echo "[USEQ    ][MESSAGE!] - Calling select-numapped."
+echo "[USEQ    ][MESSAGE!] - Selecting unmapped sequences from splited-genome.fas."
+select-unmapped ${PATH_QUERY_GENOME%/*}/splited-genome.${FASTA_FILE_NAME:0:15}.${SIZE}.${STEPS}.fas \
 		${PATH_QUERY_GENOME%/*}/gids.txt \
 		$THIS_PROCESS_PID
 
 # MAPPING UNMAPPED REDAS TO REFERENCE GENOME.
-echo "[USEQ    ][MESSAGE!] - Mapping unmapped reads to reference genome"
+echo "[USEQ    ][MESSAGE!] - Calling bowtie armory."
+echo "[USEQ    ][MESSAGE!] - Mapping unmapped reads to reference genome."
 bowtie2-build -f $PATH_QUERY_GENOME $PATH_QUERY_GENOME
 bowtie2 -x ${PATH_QUERY_GENOME} -fU unmapped.${THIS_PROCESS_PID}.fas -S unique.${THIS_PROCESS_PID}.sam
 
+
 #	[TESTING] -  [OK]
 
-echo "[USEQ    ][MESSAGE!] - SAM <==> sorted BAM"
+echo "[USEQ    ][MESSAGE!] - Calling Samtools."
+echo "[USEQ    ][MESSAGE!] - SAM <==> sorted BAM."
 samtools view -bS -T ${PATH_QUERY_GENOME} -o unique.${THIS_PROCESS_PID}.bam unique.${THIS_PROCESS_PID}.sam
 samtools sort -O BAM -o unique.${THIS_PROCESS_PID}.sort.bam --reference ${PATH_QUERY_GENOME} unique.${THIS_PROCESS_PID}.bam
 samtools index unique.${THIS_PROCESS_PID}.sort.bam unique.${THIS_PROCESS_PID}.sort.bai
 
-echo "[USEQ    ][MESSAGE!] - Assembling unique reads"
+echo "[USEQ    ][MESSAGE!] - Calling cufflinks armory."
+echo "[USEQ    ][MESSAGE!] - Assembling unique reads."
 [ -d "cuff_out.${THIS_PROCESS_PID}" ] || mkdir cuff_out.${THIS_PROCESS_PID}
 cufflinks -o cuff_out.${THIS_PROCESS_PID} unique.${THIS_PROCESS_PID}.sort.bam
 
@@ -152,14 +170,4 @@ gffread cuff_out.${THIS_PROCESS_PID}/transcripts.gtf -w cuff_out.${THIS_PROCESS_
 echo "[USEQ    ][MESSAGE!] - Performing statistics"
 stats cuff_out.${THIS_PROCESS_PID}/exons.fa > cuff_out.${THIS_PROCESS_PID}/useq.stats.txt
 cat cuff_out.${THIS_PROCESS_PID}/useq.stats.txt
-#echo "[MESSAGE!] - Calculating MFE"
-
-#[ -d RNAfold.${THIS_PROCESS_PID} ] || mkdir RNAfold.${THIS_PROCESS_PID}
-#RNAfold -i cuff_out.${THIS_PROCESS_PID}/exons.fa --noPS --noLP -d2 -p > RNAfold.${THIS_PROCESS_PID}/exons.MFE.txt
-
-#echo "[MESSAGE!] - Selecting BEST unique regions"
-#select-best-useqs RNAfold.${THIS_PROCESS_PID}/exons.MFE.txt best.useqs.txt
-
-#echo "[MESSAGE!] - Cleaning the mess"
-#rm *.ps
 

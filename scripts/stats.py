@@ -46,7 +46,10 @@ def mean(hash_table):
     sum = 0.0
     for head, seq in hash_table.iteritems():
         sum += len(seq)
-    mean = sum/len(hash_table)
+    if len(hash_table) == 0:
+        mean = 0
+    else:
+        mean = sum/len(hash_table)
 
     return mean
 
@@ -144,19 +147,19 @@ def main():
     """
     input_file = argv[1]
     seqs = load(input_file)
-    print "[STATS][MESSAGE!] - number of sequences = " + str(num_sequences(seqs))
-    print "[STATS][MESSAGE!] - mean of sequences length = " + str(mean(seqs))
-    print "[STATS][MESSAGE!] - median of sequences length = " + str(median(seqs))
-    print "[STATS][MESSAGE!] - N50 up = " + str(N50_up_down(seqs)[0])
-    print "[STATS][MESSAGE!] - N50 down = " + str(N50_up_down(seqs)[1])
-    print "[STATS][MESSAGE!] - L50 = " + str(L50(seqs, N50_up_down(seqs)[0]))
-    print "[STATS][MESSAGE!] - Minimum contig length = " + str(quantiles(seqs)[0])
-    print "[STATS][MESSAGE!] - Interdecil 10 = " + str(quantiles(seqs)[2])
-    print "[STATS][MESSAGE!] - Quartile 25 = " + str(quantiles(seqs)[3])
-    print "[STATS][MESSAGE!] - Quartile 75 = " + str(quantiles(seqs)[4])
-    print "[STATS][MESSAGE!] - Interdecil 90 = " + str(quantiles(seqs)[5])
-    print "[STATS][MESSAGE!] - Maximum contig length = " + str(quantiles(seqs)[1])
-    print "[STATS][MESSAGE!] - Standard deviation = " + str(standard_deviation(seqs)[0])
-    print "[STATS][MESSAGE!] - Standard error of the mean = " + str(standard_deviation(seqs)[1])
+    print "[STATS   ][MESSAGE!] - number of sequences = " + str(num_sequences(seqs))
+    print "[STATS   ][MESSAGE!] - mean of sequences length = " + str(mean(seqs))
+    print "[STATS   ][MESSAGE!] - median of sequences length = " + str(median(seqs))
+    print "[STATS   ][MESSAGE!] - N50 up = " + str(N50_up_down(seqs)[0])
+    print "[STATS   ][MESSAGE!] - N50 down = " + str(N50_up_down(seqs)[1])
+    print "[STATS   ][MESSAGE!] - L50 = " + str(L50(seqs, N50_up_down(seqs)[1]))
+    print "[STATS   ][MESSAGE!] - Minimum contig length = " + str(quantiles(seqs)[0])
+    print "[STATS   ][MESSAGE!] - Interdecil 10 = " + str(quantiles(seqs)[2])
+    print "[STATS   ][MESSAGE!] - Quartile 25 = " + str(quantiles(seqs)[3])
+    print "[STATS   ][MESSAGE!] - Quartile 75 = " + str(quantiles(seqs)[4])
+    print "[STATS   ][MESSAGE!] - Interdecil 90 = " + str(quantiles(seqs)[5])
+    print "[STATS   ][MESSAGE!] - Maximum contig length = " + str(quantiles(seqs)[1])
+    print "[STATS   ][MESSAGE!] - Standard deviation = " + str(standard_deviation(seqs)[0])
+    print "[STATS   ][MESSAGE!] - Standard error of the mean = " + str(standard_deviation(seqs)[1])
 
 if __name__ == "__main__": main()
