@@ -138,7 +138,7 @@ cut -f1 ${PATH_QUERY_GENOME%.*}.blast | sort | uniq > ${PATH_QUERY_GENOME%/*}/gi
 
 # // SELECTING UNMAPPED SEQUENCES
 echo "[USEQ    ][MESSAGE!] - Calling select-numapped."
-echo "[USEQ    ][MESSAGE!] - Selecting unmapped sequences from splited-genome.fas."
+echo "[USEQ    ][MESSAGE!] - Selecting unmapped sequences from splited-genome.${FASTA_FILE_NAME:0:15}.${SIZE}.${STEPS}.fas."
 select-unmapped ${PATH_QUERY_GENOME%/*}/splited-genome.${FASTA_FILE_NAME:0:15}.${SIZE}.${STEPS}.fas \
 		${PATH_QUERY_GENOME%/*}/gids.txt \
 		$THIS_PROCESS_PID

@@ -84,7 +84,8 @@ def split_seqs(cont, size, steps):
         seq_name = seq_obj.name
         # MAKING SHORT THE NAME ~
         seq_name = seq_name.split(" ")[0]
-        seq_name = seq_name[:10] if len(seq_name) > 10 else seq_name
+#        seq_name = seq_name[:10] if len(seq_name) > 10 else seq_name #  BUG. PRODUCESS A BUG
+                                                                     #  CREATING APARENT DUPLICATED SEQUENCES
         # ~ 20190108 MODIFIED.
         sequence = seq_obj.sequence
         for j in xrange(0, seq_len-size+1, steps):
