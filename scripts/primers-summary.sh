@@ -2,14 +2,28 @@
 
 PATH_TO_PRM_FILES=$1
 TRANSCRIPTOME_FILE=$2
-TRANSCRIPTOME_FILE=${PATH_TO_PRM_FILES}/${TRANSCRIPTOME_FILE}
+
+if [ -z $TRANSCRIPTOME_FILE ];
+then
+	TRANSCRIPTOME_FILE=""
+else
+	TRANSCRIPTOME_FILE=${PATH_TO_PRM_FILES}/${TRANSCRIPTOME_FILE}
+fi
 
 for FILE in ${PATH_TO_PRM_FILES}/*.prm
 do
 	CONTIG_ID=$(grep SEQUENCE_ID $FILE)
 	CONTIG_ID=${CONTIG_ID##*=}
-	GENOMA_NAME=$(grep $CONTIG_ID $TRANSCRIPTOME_FILE | cut -f1 | sort | uniq | head -n 1)
-	TRANS_COORD=$(grep $CONTIG_ID $TRANSCRIPTOME_FILE | cut -f4,5 | sort | uniq | head -n 1)	
+	
+	if [ -z $TRANSCRIPTOME_FILE ];
+	then
+		GENOME_NAME="RANDOM_TEST"
+		TRANS_COORD="NO COORDS"
+	else
+		GENOME_NAME=$(grep $CONTIG_ID $TRANSCRIPTOME_FILE | cut -f1 | sort | uniq | head -n 1)
+		TRANS_COORD=$(grep $CONTIG_ID $TRANSCRIPTOME_FILE | cut -f4,5 | sort | uniq | head -n 1)
+	fi
+
 	for i in $(seq 0 4);
 	do
 		PENALTY=$(grep PRIMER_PAIR_${i}_PENALTY $FILE)
@@ -30,7 +44,7 @@ do
 		SIZE=${SIZE##*=}
 		if [ ! -z $SIZE ];
 		then
-			echo -e "$CONTIG_ID\t$GENOMA_NAME\t$TRANS_COORD\t$PENALTY\t$LEFT_SEQ\t$RIGHT_SEQ\t$LEFT_COORD\t$RIGHT_COORD\t$LEFT_TM\t$RIGHT_TM\t$SIZE"
+			echo -e "$CONTIG_ID\t$GENOME_NAME\t$TRANS_COORD\t$PENALTY\t$LEFT_SEQ\t$RIGHT_SEQ\t$LEFT_COORD\t$RIGHT_COORD\t$LEFT_TM\t$RIGHT_TM\t$SIZE"
 		fi
 	done
 done
