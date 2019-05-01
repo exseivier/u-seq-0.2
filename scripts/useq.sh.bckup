@@ -181,9 +181,6 @@ select-unmapped ${PATH_QUERY_GENOME%/*}/splited-genome.${FASTA_FILE_NAME:0:15}.$
 		${PATH_QUERY_GENOME%/*}/gids.txt \
 		$THIS_PROCESS_PID
 
-UNMAPPED_SEQS=$(grep -c ">" $CURRENTWD/unmapped.$THIS_PROCESS_PID.fas)
-echo "UNMAPPED_SEQS=$UNMAPPED_SEQS" >> $CURRENTWD/useq.log
-
 # MAPPING UNMAPPED REDAS TO REFERENCE GENOME.
 echo "[USEQ    ][MESSAGE!] - Calling bowtie armory."
 echo "[USEQ    ][MESSAGE!] - Mapping unmapped reads to reference genome."
