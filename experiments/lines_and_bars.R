@@ -1,0 +1,50 @@
+lines_and_bars <- function(log.stat) {
+	dev.new(width=10, height=6)
+	par(mar=c(2, 4, 2, 8))
+	barplot(log.stat$NoSEQS, ylab="# Sequences")
+	# MODIFIED 2019.05.05
+	#lines(1:length(log.stat$L50), log.stat$L50, col="green", lwd=2)
+	#points(1:length(log.stat$L50), log.stat$L50, col="green", pch=7, lwd=2)
+	# -------------------
+	par(new=T)
+	plot(1:length(log.stat$N50_DOWN), log.stat$N50_DOWN, type="l", col="red", lwd=2, axes=F, ylab=NA, xlab=NA)
+	axis(side=4)
+	mtext(text="Base pairs", side=4, line=2)
+	points(1:length(log.stat$N50_DOWN), log.stat$N50_DOWN, pch=10, lwd=2, col="red")
+	lines(1:length(log.stat$MEDIAN), log.stat$MEDIAN, col="blue", lwd=2)
+	points(1:length(log.stat$MEDIAN), log.stat$MEDIAN, pch=5, col="blue", lwd=2)
+	par(new=T)
+	# MODIFIED 2019.05.05
+	plot(1:length(log.stat$L50), log.stat$L50, type="l", col="green", lwd=2, axes=F, ylab=NA, xlab=NA, ylim=c(0, max(log.stat$NoSEQS)))
+	axis(side=4, line=4)
+	mtext(text="No Sequences L50", side=4, line=6)
+	points(1:length(log.stat$L50), log.stat$L50, pch=7, col="green", lwd=2)
+	# -------------------
+	legend("topright", legend=c("No Sequences", "N50", "Median sequence length", "L50"), bty="n", lty=c(NA, 1, 1, 1), lwd=c(NA, 2, 2, 2), col=c(NA, "red", "blue", "green"), border=c("black", NA, NA, NA), fill=c("gray", NA, NA, NA), x.intersp=c(0.5, 2, 2, 2))
+}
+
+plot_lines <- function(mnp){
+	dev.new(width=15, height=8)
+	par(mar=c(6, 4, 4, 8))
+	plot(1:length(mnp$WINDOW_SIZE), mnp$TOTAL_SEQS - mnp$UNMAPPED, type="l", col="blue", axes=F, ylab="# Query fragments", xlab=NA, ylim=c(0, max(mnp$UNMAPPED, mnp$TOTAL_SEQS - mnp$UNMAPPED)))
+	axis(side=2)
+	points(1:length(mnp$WINDOW_SIZE), mnp$TOTAL_SEQS - mnp$UNMAPPED, col="blue", pch=5)
+	lines(1:length(mnp$WINDOW_SIZE), mnp$UNMAPPED, col="brown")
+	points(1:length(mnp$WINDOW_SIZE), mnp$UNMAPPED, col="brown", pch=7)
+	par(new=T)
+	plot(1:length(mnp$WINDOW_SIZE), mnp$NoSEQS, type="l", col="red", axes=F, ylab=NA, xlab=NA)
+	points(1:length(mnp$WINDOW_SIZE), mnp$NoSEQS, pch=3, col="red")
+	axis(side=4)
+	lines(1:length(mnp$WINDOW_SIZE), mnp$L50, col="green")
+	points(1:length(mnp$WINDOW_SIZE), mnp$L50, col="green", pch=2)
+	mtext("# Sequences", side=4, line=2)
+	par(new=T)
+	par(mar=c(6, 4, 4, 8))
+	plot(1:length(mnp$WINDOW_SIZE), mnp$N50_DOWN, col="cyan", lwd=2, axes=F, ylab=NA, xlab=NA)
+	axis(side=4, line=4)
+	mtext("Base pairs", side=4, line=6)
+	mtext("Qcov", side=1, at=-7, line=0)
+	mtext("Identity", side=1, at=-7, line=2)
+	mtext("W_Size", side=1, at=-7, line=4)
+	legend(x="top", inset=-0.1, legend=c("Mapped query frags", "Unmapped query frags", "# Sequences", "L50", "N50_DOWN"), col=c("blue", "brown", "red", "green", "cyan"), xpd=T, horiz=T, lty=c(1, 1, 1, 1, NA), pch=c(5, 7, 3, 2, 1), cex=0.7)
+}
